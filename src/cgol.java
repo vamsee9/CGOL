@@ -94,8 +94,44 @@ public class cgol {
 	 * neighbors cells will come to life.
 	 */
 
-	private int isAlive(int row, int col, int[][] world) {
-		return 0;
+	protected int isAlive(int row, int col, int[][] world) {
+
+		// return as binary. 1 is alive for next Gen.
+		Integer aliveForNextGen;
+		Integer numOfLiveCells = 0;
+
+		for (int cellHorizontal = row - 1; cellHorizontal <= row + 1; cellHorizontal++) {
+			int rowCheck = cellHorizontal;
+			if (cellHorizontal < 0) {
+				rowCheck = edge;
+			} else if (cellHorizontal > edge) {
+				rowCheck = 0;
+			}
+
+			for (int cellVertical = col - 1; cellVertical <= col + 1; cellVertical++) {
+				int colCheck = cellVertical;
+				if (cellVertical < 0) {
+					colCheck = edge;
+				} else if (cellVertical > edge) {
+					colCheck = 0;
+				}
+
+				if (world[rowCheck][colCheck] == 1)
+					numOfLiveCells++;
+			}
+
+		}
+		
+		if (numOfLiveCells == 3) {
+			aliveForNextGen = 1;
+		} else if (numOfLiveCells == 4) {
+			aliveForNextGen = world[row][col];
+		} else {
+			aliveForNextGen = 0;
+		}
+		
+		return aliveForNextGen;
+		
 	}
 
 }
