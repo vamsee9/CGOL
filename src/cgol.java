@@ -6,15 +6,28 @@
  * @author vamsi
  *
  */
+
 public class cgol {
 	
+	private Integer edge;
+	int[][] currentGen;
+	int[][] nextGen;
+	private cgolWindow winDisplay;
+	
 	public cgol(Integer dimen) {
+		this.winDisplay = new cgolWindow(dimen);
+		this.edge = dimen - 1;
+		this.nextGen = new int[dimen][dimen];
+		currentGen = createRandomStart(dimen);
 	}
 	
 	public cgol(Integer dimen, int[][] startmatrix) {
+		this.winDisplay = new cgolWindow(dimen);
+		this.edge = dimen - 1;
+		this.nextGen = new int[dimen][dimen];
+		
 	}
 	
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		cgol simule = new cgol(50);
 		int[][] endingWorld = simule.simulate(50);
@@ -27,7 +40,12 @@ public class cgol {
 	 */
 	private int[][] simulate(Integer maxGen) {
 		// TODO Auto-generated method stub
-		return new int[1][1];
+		for(int i = 0; i <= maxGen; i++) {
+			this.winDisplay.display(currentGen, i);
+			this.winDisplay.sleep(125);
+			copyAndZeroOut(nextGen, currentGen);
+		}
+		return currentGen;
 	}
 	
 	// Contains the logic for the startingWorld.
@@ -36,7 +54,19 @@ public class cgol {
 	
 	
 	private int[][] createRandomStart(Integer dimen) {
-		return new int[1][1];
+		//create Random Start
+		
+		currentGen = new int[dimen][dimen];
+		for (int i = 0; i < dimen; i++) {
+			for (int j = 0; j < dimen; j++) {
+				if(Math.random() * 100 > 50) {
+					currentGen[i][j] = 1;
+				} else {
+					currentGen[i][j] = 0;
+				}
+			}
+		}
+		return currentGen;
 	}
 	
 	// Copy the values of "Next" matrix to "current" matrix as Gen.
