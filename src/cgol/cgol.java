@@ -1,5 +1,8 @@
 package cgol;
 
+import javax.swing.JFrame;
+
+
 /**
  * @author vamsi
  *
@@ -36,6 +39,15 @@ public class cgol {
         if (args.length >= 4) {
             unitSize = Integer.parseInt(args[3]);
         }
+        
+        /* Initialize GUI */
+        JFrame frame = new JFrame("Game of Life");
+        Board board = new Board(unitSize, width, height, cellType);
+        frame.add(board);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.pack();
+        frame.setVisible(true);
 
     }
 
