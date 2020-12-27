@@ -1,12 +1,4 @@
 package cgol;
-import javax.swing.JFrame;
-
-import cgol.BasicCell;
-import cgol.Board;
-import cgol.Cell;
-import cgol.GrowthCell;
-import cgol.RandomFactory;
-
 
 /**
  * @author vamsi
