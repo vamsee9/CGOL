@@ -11,27 +11,39 @@ import java.awt.Color;
  */
 public class RandomFactory extends Cell {
 
-	@Override
-	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	interface Factory {
+        Cell create();
+    }
+    Factory[] types = null;
 
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
+    public RandomFactory() {
+        types = new Factory[2];
+        types[0] = new Factory() {
+            public Cell create() {
+                return new BasicCell();
+            }
+        };
+        types[1] = new Factory() {
+            public Cell create() {
+                return new GrowthCell();
+            }
+        };
+        curState = nextState = 0;
+    }
 
-	@Override
-	public Cell divide() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Color getColor() {
+        return new Color(255, 0, 0);
+    }
 
-	@Override
-	public Cell divide(int state) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public void update() {
+        /* Nothing */
+    }
+
+    public Cell divide() {
+        return types[rand.nextInt(types.length)].create();
+    }
+
+    public Cell divide(int state) {
+        return types[rand.nextInt(types.length)].create();
+    }
 }
