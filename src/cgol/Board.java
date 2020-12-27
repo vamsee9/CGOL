@@ -3,11 +3,16 @@
  */
 package cgol;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Vector;
 
 import javax.swing.JPanel;
+
 
 /**
  * @author vamsi
@@ -16,52 +21,179 @@ import javax.swing.JPanel;
 public class Board extends JPanel
 implements Runnable, MouseMotionListener, MouseListener  {
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	 private static final long serialVersionUID = 1L;
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	    private int unitSize, width, height;
+	    private Cell[][] grid = null;
+	    private int sleepTime;
+	    private volatile boolean enabled;
+	    private int button;
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	    public Board(int unitSize, int width, int height, Cell starter) {
+	        super();
+	        this.unitSize = unitSize;
+	        this.width = width;
+	        this.height = height;
+	        sleepTime = 200;
+	        Dimension size = new Dimension(width * unitSize, height * unitSize);
+	        setMinimumSize(size);
+	        setPreferredSize(size);
+	        addMouseListener(this);
+	        addMouseMotionListener(this);
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	        /* Create grid with cells */
+	        grid = new Cell[width][height];
+	        for (int i = 0; i < width; i++) {
+	            for (int j = 0; j < height; j++) {
+	                grid[i][j] = starter.divide();
+	            }
+	        }
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	        /* Wire up the cells */
+	        for (int i = 0; i < width; i++) {
+	            for (int j = 0; j < height; j++) {
+	                Vector<Cell> cells = new Vector<Cell>();
+	                for (int x = i-1; x <= i+1; x++)
+	                    for (int y = j-1; y <= j+1; y++) {
+	                        if (x == i && y == j)
+	                            continue;
+	                        int xx = x;
+	                        int yy = y;
+	                        if (xx >= width)
+	                            xx -= width;
+	                        if (yy >= height)
+	                            yy -= height;
+	                        if (xx < 0)
+	                            xx += width;
+	                        if (yy < 0)
+	                            yy += height;
+	                        cells.add(grid[xx][yy]);
+	                    }
+	                grid[i][j].addAdj(cells);
+	            }
+	        }
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	        enabled = false;
+	        start();
+	    }
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	    /* Run the iteration thread */
+	    public void start() {
+	        if (!enabled) {
+	            enabled = true;
+	            (new Thread(this)).start();
+	        }
+	    }
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
+	    /* Stop the iteration thread. */
+	    public void stop() {
+	        enabled = false;
+	    }
+
+	    public void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        int unitWidth  = width*unitSize;
+	        int unitHeight = height*unitSize;
+	        g.drawLine(0, unitHeight, unitWidth, unitHeight);
+	        g.drawLine(unitWidth, 0, unitWidth, unitHeight);
+	        for (int i = 0; i < width; i++) {
+	            for (int j = 0; j < height; j++) {
+	                drawCell(g, i, j);
+	            }
+	        }
+	    }
+
+	    private void drawCell(Graphics g, int x, int y) {
+	        g.setColor(grid[x][y].getColor());
+	        g.fillRect(x * unitSize, y * unitSize, unitSize, unitSize);
+	    }
+
+	    /* Perform a single iteration of the automata */
+	    public void iterate() {
+	        for (int i = 0; i < width; i++) {
+	            for (int j = 0; j < height; j++) {
+	                grid[i][j].update();
+	            }
+	        }
+	        for (int i = 0; i < width; i++) {
+	            for (int j = 0; j < height; j++) {
+	                grid[i][j].sync();
+	            }
+	        }
+	    }
+
+	    public void run() {
+	        while (enabled) {
+	            try {
+	                Thread.sleep(sleepTime);
+	            } catch (Exception e) {
+	                return;
+	            }
+	            iterate();
+	            repaint();
+	        }
+	    }
+
+	    /** {@inheritDoc} */
+	    public final void mouseDragged(final MouseEvent e) {
+	        editCell(e.getPoint());
+	    }
+
+	    /* Edit the cell at the given point according to button. */
+	    private void editCell(Point p) {
+	        int state;
+	        if (button == MouseEvent.BUTTON1) {
+	            state = 1;
+	        } else if (button == MouseEvent.BUTTON3) {
+	            state = 0;
+	        } else {
+	            return;
+	        }
+	        int x = (int) (p.getX() / unitSize);
+	        int y = (int) (p.getY() / unitSize);
+	        if ((x < width) && (x >= 0) && (y < height) && (y >= 0)) {
+	            grid[x][y].setState(state);
+	        }
+	        repaint();
+	    }
+
+	    /** {@inheritDoc} */
+	    public void mousePressed(final MouseEvent e) {
+	        button = e.getButton();
+	        if (button == MouseEvent.BUTTON2) {
+	            if (enabled) {
+	                stop();
+	            } else {
+	                start();
+	            }
+	        } else {
+	            editCell(e.getPoint());
+	        }
+	    }
+
+	    /** {@inheritDoc} */
+	    public void mouseMoved(final MouseEvent e) {
+	        /* Do nothing */
+	    }
+
+	    /** {@inheritDoc} */
+	    public void mouseExited(final MouseEvent e) {
+	        /* Do nothing */
+	    }
+
+	    /** {@inheritDoc} */
+	    public void mouseEntered(final MouseEvent e) {
+	        /* Do nothing */
+	    }
+
+	    /** {@inheritDoc} */
+	    public void mouseClicked(final MouseEvent e) {
+	        /* Do nothing */
+	    }
+
+	    /** {@inheritDoc} */
+	    public final void mouseReleased(final MouseEvent e) {
+	        /* Do nothing */
+	    }
 
 }
