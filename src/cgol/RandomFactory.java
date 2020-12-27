@@ -34,5 +34,4 @@ public class RandomFactory extends Cell {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
