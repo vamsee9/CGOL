@@ -1,16 +1,15 @@
-
 package cgol;
 
-import java.awt.Color;
-import java.util.Random;
-import java.util.Vector;
+import java.awt.*;
+import java.util.*;
 
 /**
+ * Abstract class for implementing various types of cells.
  * @author vamsi
- *
  */
 public abstract class Cell {
-	protected Vector<Cell> adj = null;
+
+    protected Vector<Cell> adj = null;
     protected int curState, nextState;
     protected static Random rand = new Random();
 
@@ -49,5 +48,4 @@ public abstract class Cell {
     public void sync() {
         curState = nextState;
     }
-
 }

@@ -1,15 +1,12 @@
 package cgol;
 
+import java.awt.*;
+import java.util.*;
+
 /**
+ * Basic cell for implementing Conway's Game of Life.
  * 
- */
-
-import java.awt.Color;
-import java.util.Iterator;
-
-/**
  * @author vamsi
- *
  */
 public class BasicCell extends Cell {
 
@@ -42,7 +39,7 @@ public class BasicCell extends Cell {
 
 		/*
 		 * Any live cell with fewer than two live neighbours dies, as if caused by underpopulation. 
-		 * Any live cell with more than three live neighbours dies, as if by overcrowding. 
+		 * Any live cell with more than three live neighbours dies, as if by overcrowding.
 		 * Any live cell with two or three live neighbours lives on to the next generation. 
 		 * Any dead cell with exactly three live neighbours becomes a live cell.
 		 */
@@ -54,16 +51,11 @@ public class BasicCell extends Cell {
 			nextState = 0;
 	}
 
-	@Override
 	public Cell divide() {
-		// TODO Auto-generated method stub
-		return null;
+		return divide(rand.nextInt(2));
 	}
 
-	@Override
 	public Cell divide(int state) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BasicCell(state);
 	}
-
 }
