@@ -1,7 +1,6 @@
 package cgol;
 
 import java.awt.*;
-import java.util.*;
 
 /**
  * Spawns off random cells on divide().

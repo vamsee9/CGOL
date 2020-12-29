@@ -9,6 +9,7 @@ import java.awt.Dimension;
 
 import javax.swing.JApplet;
 
+@SuppressWarnings("deprecation")
 public class LifeApplet extends JApplet {
 
 	private static final long serialVersionUID = 7359156116065111805L;
