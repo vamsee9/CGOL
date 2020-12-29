@@ -6,10 +6,10 @@ four arguments,
 We can define your own cell type just by inheriting the Cell abstract
 class.
 ----------------------------------------------------------------------
-# OutPut - GUI (Graphical User Interface)
+# OutPut - GUI (Graphical User Interface) - v2.3
 ![alt text](https://github.com/vamsee9/CGOL/blob/master/COGL.gif)
 
 ----------------------------------------------------------------------
-# Here is UML diagram for COGL - Conway's Game Of life projekt 
+# Here is UML diagram for COGL - Conway's Game Of life projekt - v2.3
 
 ![alt text](https://github.com/vamsee9/CGOL/blob/master/CGL.png)
